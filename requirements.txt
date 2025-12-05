@@ -1,0 +1,5 @@
+# optional for extended experiments
+sentencepiece
+openai
+transformers
+sacrebleu
