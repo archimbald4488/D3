@@ -12,7 +12,6 @@ It demonstrates:
 
 Usage:
     python src/main.py --simulate       # run with simulated model outputs (default)
-    python src/main.py --openai         # run using OpenAI API (requires OPENAI_API_KEY env var)
 """
 
 import argparse
@@ -56,7 +55,7 @@ def tot_prompt(src, k_candidates=3, src_lang="EN", tgt_lang="DE"):
     return f"Translate from {src_lang} to {tgt_lang}:\\nSource: {src}\\nGenerate {k_candidates} valid translation candidates, and for each give scores for Accuracy(1-10), Fluency(1-10), Style(1-10), Cultural(1-10). Then pick the best candidate."
 
 def simulated_model_response(prompt: str):
-    # Very simple deterministic pseudo-translation for demonstration
+    # pseudo-translation for demonstration
     text = prompt.split("\\n")[-1]
     tokens = text.split()
     # naive "translation": reverse word order and append [DE] as a tag
@@ -64,7 +63,7 @@ def simulated_model_response(prompt: str):
     return {"translation": translated, "scores": {"bleu_like": random.uniform(20,45)}}
 
 def simple_bleu(reference: str, hypothesis: str):
-    # naive unigram overlap score (not sacrebleu) - quick check for the assignment
+    # naive unigram overlap score (not sacrebleu)
     ref_tokens = set(reference.split())
     hyp_tokens = set(hypothesis.split())
     overlap = ref_tokens.intersection(hyp_tokens)
@@ -92,7 +91,6 @@ def run_all(method="simulate"):
             if method == "simulate":
                 resp = simulated_model_response(prompt)
             else:
-                # For this minimal build, other methods fallback to simulated
                 resp = simulated_model_response(prompt)
             hyp = resp.get("translation", "[no-output]")
             score = simple_bleu(tgt, hyp)
@@ -108,3 +106,4 @@ if __name__ == "__main__":
     parser.add_argument("--simulate", action="store_true", help="Use simulated model outputs (default)")
     args = parser.parse_args()
     run_all(method="simulate")
+
